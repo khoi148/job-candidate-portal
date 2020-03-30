@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Card } from "react-bootstrap";
+
 export default function Homepage() {
   const [data, setData] = useState(null);
 
   async function fetchData() {
-    let url = `http://localhost:3001/candidates`;
+    let url = `http://localhost:3001/candidates`; //name of json file in root
     let data = await fetch(url);
     let response = data.json();
 
@@ -16,6 +17,7 @@ export default function Homepage() {
   useEffect(() => {
     fetchData();
   }, []);
+
   return (
     <div>
       <h1>Hi, this is the homepage</h1>
@@ -42,6 +44,9 @@ export default function Homepage() {
                   <Card.Text className="text-muted">
                     {item.country}, {item.city}
                   </Card.Text>
+                  <Card.Link href={`/candidate/${item.id}`}>
+                    Profile Link
+                  </Card.Link>
                 </Card.Body>
               </Card>
             );
@@ -62,4 +67,5 @@ export default function Homepage() {
       "city": "H.C.M.C.",
       "country": "Vietnam",
       "photo_url": "https://robohash.org/idvoluptatibusdolorem.png?size=500x500&set=set1",
-  */
+      "id": 203
+      */
