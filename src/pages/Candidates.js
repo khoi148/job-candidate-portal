@@ -12,24 +12,25 @@ export default function Candidates(props) {
 
     response.then(result => {
       setData(result);
-      console.log(result);
+      console.log("call to server", result);
     });
   }
   useEffect(() => {
     fetchData();
   }, []);
-  console.log("candidates", props);
 
   let auth = props.user.isAuthenticated;
+  console.log("from cd.js", auth);
+  console.log("hmm ", props.user.isAuthenticated);
   return (
     <div>
       <div className="d-flex flex-column align-items-center text-center mb-5">
         <h1 className="border border-primary rounded-pill px-5 py-3 mb-3">
           Homepage
         </h1>
-        <h2 className={auth ? "text-success" : ""}>
-          {props.user.isAuthenticated ? "Logged in" : "Not logged in"}
-        </h2>
+        {console.log("render", props.user.isAuthenticated)}
+        {auth === true && <h2 className="text-success">Logged in</h2>}
+        {auth === false && <h2 className="">Not logged in yet</h2>}
         <Link
           className="d-flex my-2"
           to="/company"
@@ -41,20 +42,20 @@ export default function Candidates(props) {
         </Link>
         <Link
           className="d-flex my-2"
-          to={!props.user.isAuthenticated ? "/login" : "/logout"}
+          to={auth === false ? "/login" : "/logout"}
           style={{ width: "200px", textDecoration: "none" }}
         >
           <button className="flex-grow-1 btn btn-primary">
-            {!props.user.isAuthenticated ? "Login" : "Logout"}
+            {auth === false ? "Login" : "Logout"}
           </button>
         </Link>
       </div>
 
-      <div className="d-flex flex-wrap bg-secondary">
+      <div className="row">
         {data !== null &&
           data.map(item => {
             return (
-              <Card style={{ width: "18rem" }}>
+              <Card className="col-md-3">
                 <Card.Body>
                   <Card.Img
                     variant="top"
@@ -72,7 +73,7 @@ export default function Candidates(props) {
                   <Card.Text className="text-muted">
                     {item.country}, {item.city}
                   </Card.Text>
-                  <Link to={`/candidate/${item.id}`}>Profile Link</Link>
+                  <Link to={`/candidate/${item.id}`}>Edit Profile</Link>
                 </Card.Body>
               </Card>
             );

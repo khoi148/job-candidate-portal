@@ -11,7 +11,6 @@ import LogoutPage from "./pages/LogoutPage.js";
 export default function App() {
   const [user, setUser] = useState({ isAuthenticated: false });
   const myStorage = window.localStorage;
-  let check;
 
   const ProtectedRoute = props => {
     console.log("protectedRoute Props", props);
@@ -28,6 +27,17 @@ export default function App() {
       />
     );
   };
+
+  function fetchLocalStorage() {
+    let check = myStorage.getItem("auth");
+    console.log("fetchLocalStorage", check, typeof check);
+    check = check === "true" ? true : false;
+    setUser({ isAuthenticated: check });
+  }
+
+  useEffect(() => {
+    fetchLocalStorage();
+  }, []);
   //order matters in a Router, Switch. It runs from top to bottom like a case statement
   console.log("isAuth value", user);
 
@@ -41,13 +51,25 @@ export default function App() {
       <Route
         exact
         path={["/login"]}
-        render={props => <LoginPage {...props} user={user} setUser={setUser} />}
+        render={props => (
+          <LoginPage
+            {...props}
+            user={user}
+            setUser={setUser}
+            myStorage={myStorage}
+          />
+        )}
       />
       <Route
         exact
         path={["/logout"]}
         render={props => (
-          <LogoutPage {...props} user={user} setUser={setUser} />
+          <LogoutPage
+            {...props}
+            user={user}
+            setUser={setUser}
+            myStorage={myStorage}
+          />
         )}
       />
       <Route

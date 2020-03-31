@@ -9,17 +9,17 @@ export default function LoginPage(props) {
       <h1 className="border border-primary rounded-pill px-5 py-3 mb-3">
         Login Page
       </h1>
-      <button
-        className="btn btn-primary my-3"
+      <Link
+        className="my-3"
         onClick={() => {
           alert("you've logged in");
+          props.myStorage.setItem("auth", true);
           props.setUser({ isAuthenticated: true });
         }}
+        to="/"
       >
-        <Link className="text-light" to="/">
-          Log in
-        </Link>
-      </button>
+        <button className=" btn btn-primary text-light">Log in</button>
+      </Link>
       <Link to="/">Back to home page</Link>
     </div>
   );

@@ -23,12 +23,21 @@ export default function CandidatePage(props) {
   }
   return (
     <div>
-      <h1>
-        Hi, this is the Candidate Page for{" "}
+      <h1 className="row border border-warning rounded-pill px-5 py-3 mb-3">
+        Candidate Page :{" "}
         {candidateData.first_name + " " + candidateData.last_name}
       </h1>
-      <CandidateForm candidate={candidateData} />
-      <Link to="/">Back to HomePage</Link>
+      <div className="row">
+        <CandidateForm candidate={candidateData} />
+      </div>
+      <div className="text-center mt-5">
+        <Link to="/">
+          <button className="btn btn-transparent border-dark">
+            {" "}
+            back to home{" "}
+          </button>
+        </Link>
+      </div>
     </div>
   );
 }
