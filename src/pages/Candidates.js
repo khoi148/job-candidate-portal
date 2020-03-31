@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Card } from "react-bootstrap";
+import { Link } from "react-router-dom";
 
-export default function Homepage() {
+export default function Candidates(props) {
   const [data, setData] = useState(null);
 
   async function fetchData() {
@@ -17,11 +18,38 @@ export default function Homepage() {
   useEffect(() => {
     fetchData();
   }, []);
+  console.log("candidates", props);
 
+  let auth = props.user.isAuthenticated;
   return (
     <div>
-      <h1>Hi, this is the homepage</h1>
-      <h2>Let's fetch some data</h2>
+      <div className="d-flex flex-column align-items-center text-center mb-5">
+        <h1 className="border border-primary rounded-pill px-5 py-3 mb-3">
+          Homepage
+        </h1>
+        <h2 className={auth ? "text-success" : ""}>
+          {props.user.isAuthenticated ? "Logged in" : "Not logged in"}
+        </h2>
+        <Link
+          className="d-flex my-2"
+          to="/company"
+          style={{ width: "200px", textDecoration: "none" }}
+        >
+          <button className="flex-grow-1 btn btn-primary">
+            Go to Company Page
+          </button>
+        </Link>
+        <Link
+          className="d-flex my-2"
+          to={!props.user.isAuthenticated ? "/login" : "/logout"}
+          style={{ width: "200px", textDecoration: "none" }}
+        >
+          <button className="flex-grow-1 btn btn-primary">
+            {!props.user.isAuthenticated ? "Login" : "Logout"}
+          </button>
+        </Link>
+      </div>
+
       <div className="d-flex flex-wrap bg-secondary">
         {data !== null &&
           data.map(item => {
@@ -44,9 +72,7 @@ export default function Homepage() {
                   <Card.Text className="text-muted">
                     {item.country}, {item.city}
                   </Card.Text>
-                  <Card.Link href={`/candidate/${item.id}`}>
-                    Profile Link
-                  </Card.Link>
+                  <Link to={`/candidate/${item.id}`}>Profile Link</Link>
                 </Card.Body>
               </Card>
             );

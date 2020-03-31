@@ -7,9 +7,7 @@ import { BrowserRouter as Router, Switch } from "react-router-dom";
 
 ReactDOM.render(
   <Router>
-    <Switch>
-      <App />
-    </Switch>
+    <App />
   </Router>,
   document.getElementById("root")
 );
