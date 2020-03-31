@@ -12,6 +12,7 @@
 /build
 
 # misc
+candidates.json
 .DS_Store
 .env.local
 .env.development.local

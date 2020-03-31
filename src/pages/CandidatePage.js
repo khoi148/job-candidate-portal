@@ -19,7 +19,7 @@ export default function CandidatePage(props) {
   }, [id]); //always use arrow functions
 
   if (candidateData === null) {
-    return <div>No data Loaded</div>;
+    return <div>No Candidate data Loaded</div>;
   }
   return (
     <div>
