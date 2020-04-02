@@ -8,18 +8,25 @@ export default function CandidatePage(props) {
   const [candidateData, setCandidateData] = useState(null);
   async function fetchData() {
     console.log("id", id);
-    let data = await fetch(`http://localhost:3001/candidates/` + id);
+    let url = `https://job-portal-clone-khoi.herokuapp.com/candidates/${id}`;
+    let config = {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json"
+      }
+    };
+    let data = await fetch(url, config);
     let response = await data.json();
-    console.log(response);
+    console.log("call to heroku from CandidatePage.js", response);
     setCandidateData(response);
   }
 
   useEffect(() => {
     fetchData();
-  }, [id]); //always use arrow functions
+  }, []); //always use arrow functions
 
   if (candidateData === null) {
-    return <div>No Candidate data Loaded</div>;
+    return <div>Loading</div>;
   }
   return (
     <div>

@@ -11,6 +11,7 @@
     "bootstrap": "^4.4.1",
     "helmet": "^3.22.0",
     "json-server": "^0.16.1",
+    "myjson": "^1.0.0",
     "react": "^16.13.1",
     "react-bootstrap": "^1.0.0",
     "react-dom": "^16.13.1",

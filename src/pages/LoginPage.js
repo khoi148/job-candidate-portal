@@ -2,7 +2,6 @@ import React from "react";
 import { Link } from "react-router-dom";
 export default function LoginPage(props) {
   console.log("login props", props);
-  const myStorage = window.localStorage;
 
   return (
     <div className="d-flex flex-column align-items-center text-center">

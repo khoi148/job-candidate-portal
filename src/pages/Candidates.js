@@ -6,29 +6,32 @@ export default function Candidates(props) {
   const [data, setData] = useState(null);
 
   async function fetchData() {
-    let url = `http://localhost:3001/candidates`; //name of json file in root
-    let data = await fetch(url);
-    let response = data.json();
-
-    response.then(result => {
-      setData(result);
-      console.log("call to server", result);
-    });
+    //use this other url if you wanna use the local server. Use command
+    //json-server -p3001 --watch candidates.json
+    //`http://localhost:3001/candidates`;
+    let url = `https://job-portal-clone-khoi.herokuapp.com/candidates`;
+    let config = {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json"
+      }
+    };
+    let data = await fetch(url, config);
+    let response = await data.json();
+    console.log("call to heroku", response);
+    setData(response);
   }
   useEffect(() => {
     fetchData();
   }, []);
 
   let auth = props.user.isAuthenticated;
-  console.log("from cd.js", auth);
-  console.log("hmm ", props.user.isAuthenticated);
   return (
     <div>
       <div className="d-flex flex-column align-items-center text-center mb-5">
         <h1 className="border border-primary rounded-pill px-5 py-3 mb-3">
           Homepage
         </h1>
-        {console.log("render", props.user.isAuthenticated)}
         {auth === true && <h2 className="text-success">Logged in</h2>}
         {auth === false && <h2 className="">Not logged in yet</h2>}
         <Link
@@ -73,7 +76,13 @@ export default function Candidates(props) {
                   <Card.Text className="text-muted">
                     {item.country}, {item.city}
                   </Card.Text>
-                  <Link to={`/candidate/${item.id}`}>Edit Profile</Link>
+                  {auth === true ? (
+                    <Link to={`/candidate/${item.id}`}>Edit Profile</Link>
+                  ) : (
+                    <Card.Text className="text-muted">
+                      Log in to edit profiles...
+                    </Card.Text>
+                  )}
                 </Card.Body>
               </Card>
             );

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-
+import { useParams, useHistory } from "react-router-dom";
 import { InputGroup, Row, Col, Form, Button, Container } from "react-bootstrap";
 
 export default function CandidateForm(props) {
@@ -14,59 +14,71 @@ export default function CandidateForm(props) {
     last_name: "",
     first_name: ""
   });
+  const { id } = useParams();
+  let history = useHistory();
 
   const getCandidate = async () => {
-    try {
-      const response = await fetch(
-        `http://localhost:3001/candidates/${props.id}`
-      );
-      const data = await response.json();
-      setCandidate(data);
-    } catch {
-      console.log("Could not fetch candidate.");
-    }
+    let url = `https://job-portal-clone-khoi.herokuapp.com/candidates/${id}`;
+    let config = {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json"
+      }
+    };
+    let data = await fetch(url, config);
+    let response = await data.json();
+    console.log("call to heroku from CandidateForm.js", response);
+    setCandidate(response);
   };
 
   useEffect(() => {
+    console.log("hi");
     if (props.candidate) {
       setCandidate(props.candidate);
     } else {
       getCandidate();
     }
-  }, [props.candidate]);
+  }, []);
 
-  const updateCandidate = async () => {
-    const config = {
-      method: "PUT",
-      body: JSON.stringify(candidate),
-      headers: {
-        "Content-Type": "application/json"
-      }
-    };
+  const updateCandidate = async e => {
     try {
-      const response = await fetch(
-        `http://localhost:3001/candidates/${candidate.id}`,
-        config
-      );
+      let url = `https://job-portal-clone-khoi.herokuapp.com/candidates/${id}`;
+      let config = {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(candidate)
+      };
+      const response = await fetch(url, config);
+      alert("Profile successfully updated");
+      history.push("/");
     } catch (error) {
       console.log("Oops");
     }
   };
 
   const onSubmit = e => {
+    e.preventDefault();
     const form = e.currentTarget;
     if (form.checkValidity() === false) {
       e.preventDefault();
       e.stopPropagation();
     } else {
+      console.log("will update");
       updateCandidate();
     }
     setValidated(true);
   };
+
   console.log("candidateform ", candidate);
+  if (candidate === undefined) return <span>Candidate is undefined</span>;
   return (
     <div className="container">
-      <img src={candidate.photo_url} alt={candidate.first_name} />
+      <img
+        src={candidate.photo_url !== undefined && candidate.photo_url}
+        alt={candidate.first_name}
+      />
       <Form noValidate validated={validated} onSubmit={onSubmit}>
         <Form.Row>
           <Form.Group as={Col} md="4" controlId="validationCustom01">
