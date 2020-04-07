@@ -1,31 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { Card } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
 
 export default function Candidates(props) {
-  const [data, setData] = useState(null);
+  //const [data, setData] = useState(null);
+  let authState = useSelector((state) => state.isAuthenticated);
+  let data = useSelector((state) => state.data);
 
-  async function fetchData() {
-    //use this other url if you wanna use the local server. Use command
-    //json-server -p3001 --watch candidates.json
-    //`http://localhost:3001/candidates`;
-    let url = `https://job-portal-clone-khoi.herokuapp.com/candidates`;
-    let config = {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json"
-      }
-    };
-    let data = await fetch(url, config);
-    let response = await data.json();
-    console.log("call to heroku", response);
-    setData(response);
-  }
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  let auth = props.user.isAuthenticated;
+  useFetchData();
+  console.log("data from redux", data);
+  let auth = authState;
   return (
     <div>
       <div className="d-flex flex-column align-items-center text-center mb-5">
@@ -55,8 +40,8 @@ export default function Candidates(props) {
       </div>
 
       <div className="row">
-        {data !== null &&
-          data.map(item => {
+        {Object.keys(data).length !== 0 &&
+          data.map((item) => {
             return (
               <Card className="col-md-3">
                 <Card.Body>
@@ -105,3 +90,27 @@ export default function Candidates(props) {
       "photo_url": "https://robohash.org/idvoluptatibusdolorem.png?size=500x500&set=set1",
       "id": 203
       */
+
+const useFetchData = () => {
+  const dispatch = useDispatch();
+  async function fetchData() {
+    //use this other url if you wanna use the local server. Use command
+    //json-server -p3001 --watch candidates.json
+    //`http://localhost:3001/candidates`;
+    let url = `https://job-portal-clone-khoi.herokuapp.com/candidates`;
+    let config = {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    let data = await fetch(url, config);
+    let response = await data.json(); //set data below sets it to this JSON
+    console.log("call to heroku", response);
+    dispatch({ type: "SETDATA", payload: response });
+  }
+
+  useEffect(() => {
+    fetchData();
+  }, []); //capitlize 'Fetch...' because React will throw error otherwise
+};

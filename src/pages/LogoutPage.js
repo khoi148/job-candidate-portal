@@ -1,6 +1,10 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+
 export default function LogoutPage(props) {
+  //let authState = useSelector((state) => state.isAuthenticated);
+  const dispatch = useDispatch();
   console.log("login props", props);
 
   return (
@@ -13,7 +17,7 @@ export default function LogoutPage(props) {
         onClick={() => {
           alert("you've logged out");
           props.myStorage.setItem("auth", false);
-          props.setUser({ isAuthenticated: false });
+          dispatch({ type: "LOGOUT" });
         }}
         to="/"
       >

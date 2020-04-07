@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useHistory } from "react-router-dom";
 import { InputGroup, Row, Col, Form, Button, Container } from "react-bootstrap";
+import { useSelector, useDispatch } from "react-redux";
 
 export default function CandidateForm(props) {
+  let candidateData = useSelector((state) => state.profile);
+  //let dispatch = useDispatch();
   const [validated, setValidated] = useState(false);
   const [candidate, setCandidate] = useState({
     city: "",
@@ -12,7 +15,7 @@ export default function CandidateForm(props) {
     job_title: "",
     photo_url: "",
     last_name: "",
-    first_name: ""
+    first_name: "",
   });
   const { id } = useParams();
   let history = useHistory();
@@ -22,33 +25,29 @@ export default function CandidateForm(props) {
     let config = {
       method: "GET",
       headers: {
-        "Content-Type": "application/json"
-      }
+        "Content-Type": "application/json",
+      },
     };
     let data = await fetch(url, config);
     let response = await data.json();
     console.log("call to heroku from CandidateForm.js", response);
     setCandidate(response);
   };
-
+  let ref;
   useEffect(() => {
-    console.log("hi");
-    if (props.candidate) {
-      setCandidate(props.candidate);
-    } else {
-      getCandidate();
-    }
+    console.log("candidate Form data", candidateData);
+    getCandidate();
   }, []);
 
-  const updateCandidate = async e => {
+  const updateCandidate = async (e) => {
     try {
       let url = `https://job-portal-clone-khoi.herokuapp.com/candidates/${id}`;
       let config = {
         method: "PUT",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(candidate)
+        body: JSON.stringify(candidate),
       };
       const response = await fetch(url, config);
       alert("Profile successfully updated");
@@ -58,7 +57,7 @@ export default function CandidateForm(props) {
     }
   };
 
-  const onSubmit = e => {
+  const onSubmit = (e) => {
     e.preventDefault();
     const form = e.currentTarget;
     if (form.checkValidity() === false) {
@@ -72,9 +71,12 @@ export default function CandidateForm(props) {
   };
 
   console.log("candidateform ", candidate);
-  if (candidate === undefined) return <span>Candidate is undefined</span>;
+  if (candidate.first_name === "") return <span>Loading</span>;
   return (
     <div className="container">
+      <h1 className="row border border-warning rounded-pill px-5 py-3 mb-3">
+        Candidate Page : {candidate.first_name + " " + candidate.last_name}
+      </h1>
       <img
         src={candidate.photo_url !== undefined && candidate.photo_url}
         alt={candidate.first_name}
@@ -88,7 +90,7 @@ export default function CandidateForm(props) {
               type="text"
               placeholder="First name"
               value={candidate.first_name}
-              onChange={e =>
+              onChange={(e) =>
                 setCandidate({ ...candidate, first_name: e.target.value })
               }
             />
@@ -104,7 +106,7 @@ export default function CandidateForm(props) {
               type="text"
               placeholder="Last name"
               value={candidate.last_name}
-              onChange={e =>
+              onChange={(e) =>
                 setCandidate({ ...candidate, last_name: e.target.value })
               }
             />
@@ -124,7 +126,7 @@ export default function CandidateForm(props) {
                 type="text"
                 value={candidate.email}
                 placeholder="john@email.com"
-                onChange={e =>
+                onChange={(e) =>
                   setCandidate({ ...candidate, email: e.target.value })
                 }
               />
@@ -143,7 +145,7 @@ export default function CandidateForm(props) {
               type="text"
               placeholder="City"
               value={candidate.city}
-              onChange={e =>
+              onChange={(e) =>
                 setCandidate({ ...candidate, city: e.target.value })
               }
             />
@@ -160,7 +162,7 @@ export default function CandidateForm(props) {
               type="text"
               placeholder="U.S.A."
               value={candidate.country}
-              onChange={e =>
+              onChange={(e) =>
                 setCandidate({ ...candidate, country: e.target.value })
               }
             />
@@ -175,10 +177,10 @@ export default function CandidateForm(props) {
               required
               type="text"
               value={candidate.photo_url}
-              onChange={e =>
+              onChange={(e) =>
                 setCandidate({
                   ...candidate,
-                  photo_url: e.target.value
+                  photo_url: e.target.value,
                 })
               }
             />
@@ -196,7 +198,7 @@ export default function CandidateForm(props) {
               type="text"
               value={candidate.company}
               placeholder="CoderSchool"
-              onChange={e =>
+              onChange={(e) =>
                 setCandidate({ ...candidate, company: e.target.value })
               }
             />
@@ -213,7 +215,7 @@ export default function CandidateForm(props) {
               type="text"
               placeholder="Developer"
               value={candidate.job_title}
-              onChange={e =>
+              onChange={(e) =>
                 setCandidate({ ...candidate, job_title: e.target.value })
               }
             />

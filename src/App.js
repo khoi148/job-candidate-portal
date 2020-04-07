@@ -7,22 +7,25 @@ import CandidatePage from "./pages/CandidatePage.js";
 import Company from "./pages/Company.js";
 import LoginPage from "./pages/LoginPage.js";
 import LogoutPage from "./pages/LogoutPage.js";
+import { useSelector, useDispatch } from "react-redux";
 
 export default function App() {
   const [user, setUser] = useState({ isAuthenticated: false });
   const myStorage = window.localStorage;
+  let authState = useSelector((state) => state.isAuthenticated);
+  const dispatch = useDispatch();
 
-  const ProtectedRoute = props => {
+  const ProtectedRoute = (props) => {
     console.log("protectedRoute Props", props);
-    return props.user.isAuthenticated ? (
+    return authState ? (
       <Route {...props} />
     ) : (
       <Redirect
         to={{
           pathname: "/",
           state: {
-            from: props.location
-          }
+            from: props.location,
+          },
         }}
       />
     );
@@ -30,9 +33,10 @@ export default function App() {
 
   function fetchLocalStorage() {
     let check = myStorage.getItem("auth");
-    console.log("fetchLocalStorage", check, typeof check);
-    check = check === "true" ? true : false;
-    setUser({ isAuthenticated: check });
+    console.log("fetchLocalStorage", check, typeof check); //localStorage always a string
+    //TODO: also get another myStorage item, for username. Set another MS item called 'username'
+    if (check === "true") dispatch({ type: "LOGIN" });
+    else dispatch({ type: "LOGOUT" });
   }
 
   useEffect(() => {
@@ -46,12 +50,12 @@ export default function App() {
       <Route
         exact
         path={["/", "/candidate"]}
-        render={props => <Candidates {...props} user={user} />}
+        render={(props) => <Candidates {...props} />}
       />
       <Route
         exact
         path={["/login"]}
-        render={props => (
+        render={(props) => (
           <LoginPage
             {...props}
             user={user}
@@ -63,26 +67,19 @@ export default function App() {
       <Route
         exact
         path={["/logout"]}
-        render={props => (
-          <LogoutPage
-            {...props}
-            user={user}
-            setUser={setUser}
-            myStorage={myStorage}
-          />
-        )}
+        render={(props) => <LogoutPage {...props} myStorage={myStorage} />}
       />
       <Route
         exact
         path={["/company"]}
-        render={props => <Company {...props} />}
+        render={(props) => <Company {...props} />}
       />
 
       <ProtectedRoute
         exact
         path={["/candidate/:id"]}
         user={user}
-        render={props => <CandidatePage {...props} user={user} />}
+        render={(props) => <CandidatePage {...props} />}
       />
       <Route path="*" component={FourOhFourPage} />
     </Switch>
