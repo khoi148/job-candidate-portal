@@ -6,7 +6,6 @@ import Candidates from "./pages/Candidates.js";
 import CandidatePage from "./pages/CandidatePage.js";
 import Company from "./pages/Company.js";
 import LoginPage from "./pages/LoginPage.js";
-import LogoutPage from "./pages/LogoutPage.js";
 import { useSelector, useDispatch } from "react-redux";
 
 export default function App() {
@@ -31,12 +30,22 @@ export default function App() {
     );
   };
 
+  const ProtectedRouteLogout = () => {
+    alert("you've logged out");
+    myStorage.setItem("auth", false);
+    myStorage.setItem("user-email", null);
+    dispatch({ type: "LOGOUT" });
+    return <Redirect to="/" />;
+  };
+
   function fetchLocalStorage() {
     let check = myStorage.getItem("auth");
     console.log("fetchLocalStorage", check, typeof check); //localStorage always a string
     //TODO: also get another myStorage item, for username. Set another MS item called 'username'
-    if (check === "true") dispatch({ type: "LOGIN" });
-    else dispatch({ type: "LOGOUT" });
+    if (check === "true") {
+      let email = myStorage.getItem("user-email");
+      dispatch({ type: "LOGIN", payload: email });
+    }
   }
 
   useEffect(() => {
@@ -54,6 +63,11 @@ export default function App() {
       />
       <Route
         exact
+        path={["/company"]}
+        render={(props) => <Company {...props} />}
+      />
+      <Route
+        exact
         path={["/login"]}
         render={(props) => (
           <LoginPage
@@ -64,16 +78,7 @@ export default function App() {
           />
         )}
       />
-      <Route
-        exact
-        path={["/logout"]}
-        render={(props) => <LogoutPage {...props} myStorage={myStorage} />}
-      />
-      <Route
-        exact
-        path={["/company"]}
-        render={(props) => <Company {...props} />}
-      />
+      <ProtectedRouteLogout exact path={["/logout"]} />
 
       <ProtectedRoute
         exact

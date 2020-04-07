@@ -7,6 +7,8 @@ export default function Candidates(props) {
   //const [data, setData] = useState(null);
   let authState = useSelector((state) => state.isAuthenticated);
   let data = useSelector((state) => state.data);
+  let userLoggedIn = useSelector((state) => state.userEmail);
+  let adminEmails = useSelector((state) => state.adminEmails);
 
   useFetchData();
   console.log("data from redux", data);
@@ -15,9 +17,21 @@ export default function Candidates(props) {
     <div>
       <div className="d-flex flex-column align-items-center text-center mb-5">
         <h1 className="border border-primary rounded-pill px-5 py-3 mb-3">
-          Homepage
+          Homepage{" "}
         </h1>
-        {auth === true && <h2 className="text-success">Logged in</h2>}
+        {auth === true && (
+          <div>
+            <h2 className="text-success">
+              Logged in
+              <h3>
+                {adminEmails.includes(userLoggedIn) ? "Admin" : "User"}: {""}
+                {userLoggedIn !== undefined &&
+                  userLoggedIn !== "" &&
+                  `${userLoggedIn}`}
+              </h3>
+            </h2>
+          </div>
+        )}
         {auth === false && <h2 className="">Not logged in yet</h2>}
         <Link
           className="d-flex my-2"
@@ -37,6 +51,11 @@ export default function Candidates(props) {
             {auth === false ? "Login" : "Logout"}
           </button>
         </Link>
+        <p className="text-muted mt-3">
+          Admins are Khoa and Bitna, log in with their emails to edit everyone.
+          Otherwise, login with a specific email below to edit that user's
+          profile only
+        </p>
       </div>
 
       <div className="row">
@@ -58,14 +77,17 @@ export default function Candidates(props) {
                   <Card.Subtitle className="mb-2">
                     Role: {item.job_title}
                   </Card.Subtitle>
+                  <Card.Subtitle className="mb-2">{item.email}</Card.Subtitle>
                   <Card.Text className="text-muted">
                     {item.country}, {item.city}
                   </Card.Text>
-                  {auth === true ? (
+                  {auth === true &&
+                  (userLoggedIn === item.email ||
+                    adminEmails.includes(userLoggedIn)) ? (
                     <Link to={`/candidate/${item.id}`}>Edit Profile</Link>
                   ) : (
                     <Card.Text className="text-muted">
-                      Log in to edit profiles...
+                      Log in to this user to edit...
                     </Card.Text>
                   )}
                 </Card.Body>

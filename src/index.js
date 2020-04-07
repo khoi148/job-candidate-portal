@@ -12,6 +12,12 @@ const initialState = {
   userEmail: "",
   data: {},
   profile: {},
+  isAdmin: false,
+  adminEmails: [
+    "admin1@email.com",
+    "bitna@coderschool.vn",
+    "khoa@coderschool.vn",
+  ],
 };
 function setUser(state = initialState, action) {
   console.log("state", initialState);
@@ -23,7 +29,7 @@ function setUser(state = initialState, action) {
     case "LOGIN":
       //if(adminEmail) do this , else
       adjust.isAuthenticated = true;
-      adjust.userEmail = "";
+      adjust.userEmail = action.payload;
       return adjust;
     case "LOGOUT":
       adjust.isAuthenticated = false;
