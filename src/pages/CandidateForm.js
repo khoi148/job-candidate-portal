@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useHistory } from "react-router-dom";
+import { useParams, useHistory, Link } from "react-router-dom";
 import { InputGroup, Row, Col, Form, Button, Container } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
+import Loading from "components/Loading";
 
 export default function CandidateForm(props) {
   let candidateData = useSelector((state) => state.profile);
@@ -71,7 +72,7 @@ export default function CandidateForm(props) {
   };
 
   console.log("candidateform ", candidate);
-  if (candidate.first_name === "") return <span>Loading</span>;
+  if (candidate.first_name === "") return <Loading />;
   return (
     <div className="container">
       <h1 className="row border border-warning rounded-pill px-5 py-3 mb-3">
@@ -80,6 +81,7 @@ export default function CandidateForm(props) {
       <img
         src={candidate.photo_url !== undefined && candidate.photo_url}
         alt={candidate.first_name}
+        style={{ width: "300px" }}
       />
       <Form noValidate validated={validated} onSubmit={onSubmit}>
         <Form.Row>
@@ -227,6 +229,15 @@ export default function CandidateForm(props) {
         </Form.Row>
         <Button type="submit">Save</Button>
       </Form>
+
+      <div className="text-center mt-5">
+        <Link to="/">
+          <button className="btn btn-transparent border-dark">
+            {" "}
+            back to home{" "}
+          </button>
+        </Link>
+      </div>
     </div>
   );
 }
